@@ -1,0 +1,21 @@
+---
+title: "Assignment 1a"
+author: "Ruben Sanchez Ramirez"
+date: "2/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### **Describe why you are taking this course:**
+
+Type here
+
+### **Describe your data science background:**
+
+Type here
+
+
+

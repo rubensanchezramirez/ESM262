@@ -1,0 +1,121 @@
+---
+title: "Computing Automobile Fuel Efficiency"
+subtitle: "Power Required to Keep a Car Moving at a Given Speed"
+author: "Ruben Sanchez Ramirez"
+date: "February 19, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+```
+
+```{r}
+
+# setup: load packages
+
+library(tidyverse)
+library(here)
+
+```
+
+### **Some Background**
+
+One of the equations used to compute automobile fuel efficiency is as follows this is the power required to keep a car moving at a given speed is as follows:
+
+$Pb=crolling∗m∗g∗V + \frac{1}{2} ∗A∗pair ∗cdrag ∗V^3$
+
+where crolling and cdrag are rolling and aerodynamic resistive coefficients, typical values are 0.015 and 0.3,
+respectively.
+
+* V: is vehicle speed (assuming no headwind) in m/s (or mps) 
+* m: is vehicle mass in kg • A is surface area of car (m2)
+* g: is acceleration due to gravity (9.8m/s2)
+* p_air: is density of air (1.2kg/m3)
+* Pb: is power in Watts
+
+Write a function to compute power, given a truck of m=31752 kg (parameters for a heavy truck) for a range of different highway speeds (30 m/s, 80 km/hr, 120 km/hr, 40 km/hr )
+
+### **Calculating power**
+#### Contract:
+
+*Input*: vehicle mass in kg (m), vehicle speed in m/s (V)
+*Output*: power in watts (Pb)
+*Parameters*: c_rolling (rolling coefficient), g (acceleration due to gravity), A (surface area of vehicle), p_air (air density), and c_drag (aerodynamic resistive coefficient)
+
+#### What will the function do?
+
+Compute the power required to keep a car moving at a given speed, as a proxy for automobile fuel efficiency, using the following equation - *body* of the function
+
+$Pb = c_rolling * m * g * V + \frac{1}{2} * A *p_air * c_drag * V^3$
+
+Pb is power in watts, c_rolling is a rolling coefficient, m is vehicle mass in kg, g is acceleration due to gravity, V is vehicle speed in m/s, A is surface area of vehicle in m^2, p_air is air density, and c_drag is an aerodynamic resistive coefficient. 
+
+#### Typical values for:
+
+* $c_{rolling} = 0.015$
+* $c_{drag} = 0.3$
+* $g = 9.8m/s^2$
+* $A = 9m^2$
+* $p_{air} = 1.2mg/m^3$
+
+#### Compute power given:
+
+m = 31752 kg <br/>
+range of vehicle speeds (30 m/s, 80 km/hr, 120 km/hr, 40 km/hr)<br/>
+Unit conversions: km/hr to m/s, 1 km = 1000m, 1 hr = 3600 s, 1 km/hr = 0.277778 m/s <br/>
+compute power for a vehicle that is only 75% of the mass of the first vehicle
+
+```{r, code = here:here("assignments", "assignment2a.R")}
+
+#Create conversion factor for speeds in km/hr
+km_conv = 0.2778
+
+# create a vector for the input speed values sorted
+speed <- sort(c(30, 80*km_conv, 120*km_conv, 40*km_conv))
+
+# run function for each of the highway speeds (30, 80 km/hr, 120 km/hr, 40 km/hr) previously sorted
+power_watts <- pb(mass_kg = 31752, velocity = speed, surface_area = 9)
+
+# run function for each highway speed for a vehicle that is only 75% the mass of the first vehicle
+power_watts_75 <- pb(mass_kg = 31752*0.75, velocity = speed, surface_area = 9)
+
+# create a data frame using these vectors
+auto_efficiency <- data.frame(speed, power_watts, power_watts_75)
+
+```
+
+#### Power as Function of Speed
+
+plot power as a function of speed and add a second line to the graph that shows power for a vehicle that is only 75% of the mass of the first vehicle
+
+```{r}
+
+efficiency_plot <- auto_efficiency %>% 
+  pivot_longer(!speed, names_to = "mass", values_to = "power") %>% 
+  ggplot(aes(x = speed, y = power)) +
+  geom_line(aes(color = mass)) +
+   # Add theme and titles and lables:
+  theme_bw()+
+  labs(title = "Automobile Fuel Efficiency",
+       subtitle = "Power Required to Keep a Car Moving at Given Speed",
+       x = "Vehicle Speed (m/s)", y = "Power in Watts")+
+  scale_color_discrete(name = "Vehicle Mass (kg)",
+                       labels = c("31,752(kg) Truck",
+                                  "75% the mass of Truck"))+
+  # Change theme variables:
+  theme(text = element_text(family = "serif"),
+        plot.title = element_text(size=14, face="bold"),
+        plot.subtitle = element_text(size = 9, face = "bold.italic"),
+        axis.title.x = element_text(size=10, face="bold", vjust = -1),
+        axis.title.y = element_text(size=10, face="bold", vjust = 2),
+        strip.text.x = element_text(size = 10, face = "bold.italic"),
+        legend.title = element_text(size = 10, face = "bold.italic"),
+        legend.position = "bottom")
+
+efficiency_plot
+
+```
+
