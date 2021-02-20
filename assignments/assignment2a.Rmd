@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
 library(here)
+library(kableExtra)
 
 ```
 
@@ -68,7 +69,22 @@ range of vehicle speeds (30 m/s, 80 km/hr, 120 km/hr, 40 km/hr)<br/>
 Unit conversions: km/hr to m/s, 1 km = 1000m, 1 hr = 3600 s, 1 km/hr = 0.277778 m/s <br/>
 compute power for a vehicle that is only 75% of the mass of the first vehicle
 
-```{r, code = here:here("assignments", "assignment2a.R")}
+```{r}
+
+################################################################################
+## Function: Create function to comput power, given m, A, and a rage of different highway speeds.
+################################################################################
+## issues with pulling the function from the r script document: needs work
+
+pb <- function(rolling = 0.015, mass_kg, gravity = 9.8, velocity, surface_area, air_density = 1.2, drag = 0.3){
+  result = rolling * mass_kg * gravity * velocity + (1/2) * surface_area* air_density * drag * (velocity)^3
+  return(result)
+}
+
+```
+
+
+```{r}
 
 #Create conversion factor for speeds in km/hr
 km_conv = 0.2778
@@ -86,6 +102,16 @@ power_watts_75 <- pb(mass_kg = 31752*0.75, velocity = speed, surface_area = 9)
 auto_efficiency <- data.frame(speed, power_watts, power_watts_75)
 
 ```
+
+```{r}
+
+# Make a table to show the difference in power between the two vehical sizes
+kable(auto_efficiency)
+# needs work: styling and lableing
+
+
+```
+
 
 #### Power as Function of Speed
 
