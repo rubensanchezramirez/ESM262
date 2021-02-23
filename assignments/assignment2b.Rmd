@@ -1,0 +1,217 @@
+---
+title: "Power Required to Keep vechical at Given Speed"
+subtitle: "Distribution of Power Based on Vehical and Rolling Coefficient"
+author: "Ruben Sanchez Ramirez"
+date: "February 22, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+```
+
+```{r}
+
+# setup: load packages
+
+library(tidyverse)
+library(purrr)
+library(ggpubr)
+library(scales)
+
+```
+
+### **Error Checking:**
+
+Working from the previous Assignment 2a, we added some error checking to our function "power_watts.R"
+This is a way to check for error so that if user gives garbage data, the function does not compute inaccurate power.
+
++ First we wanted to make sure we have the same number of mass_kg and surface_area for each car so that they are matched. This was solved by adding an "if" Statment to the function.
++ Then we wanted to make sure that the inputs for mass, surface area, and velocity were not negative. This was solved by adding "ifelse" statments for each variable.
+
+### **Function:**
+
+Use the same function as in Assignment2a:
+
+**Pb = crolling * m * g * V + 1/2 A * pair * cdrag * V3**
+
+where *crolling* and *cdrag* are rolling and aerodynamic resistive coefficients, typical values are 0.015 and 0.3, respectively
+
+*V*: is vehicle speed (assuming no headwind) in m/s (or mps) m: is vehicle mass in kg
+
+*A* is surface area of car (m2)
+
+*g* is acceleration due to gravity (9.8 m/s2) pair = density of air (1.2kg/m3)
+
+*Pb* is power in Watts
+
+### **Effects of Highway Rolling Coefficient:**
+
+We want to compare 4 cars with different masses and different surface areas:
+
+* car A mass 20000 kg, area 22 m^2^
+
+* car B mass 65000 kg, area 30 m^2^
+
+* car C mass 38000 kg, area 22 m^2^
+
+* car D mass 30000 kg, area 10 m^2^
+
+**create a random sample of 100 highways each with a different rolling coefficient**
+Sample the rolling coefficient from a uniform distribution with a **minimum value of 0.01 and a maximum value of 0.03**, sample 100 different highways.
+
+### **First Use For Loops**
+
+Other programming language (and R) use what are called loops - where repetition is more explicit
+
+```{r}
+
+# generate a data frame to store info on our possible cars
+car_rolling = data.frame(name = c("A","B","C","D"),mass=c(20000,65000,38000,30000), area = c(22,30,22,10))
+
+# recall our function needs speed in m/s not km/hr so we will also do a conversion
+#Create conversion factor for speeds in km/hr
+km_conv = 0.2778
+average_speed <- 120*km_conv
+
+# get a sample of 100 highways each with a different rolling coefficient
+# sample the rolling coefficients from a uniform distribution with a min of 0.01 and a max of 0.03
+rolling_coef <- runif(100, min = 0.01, max = 0.03)
+summary(rolling_coef)
+
+plot(density(rolling_coef), ylab="Distribution of Rolling Coefficients")
+
+# in order to run all the rolling coefficients for each car we will use for loop to cycle through them
+# create a data frame to store the results
+# one column for each car and one row for each rolling coefficient
+
+all_cars_loop = as.data.frame(matrix(nrow=length(rolling_coef), ncol=nrow(car_rolling)))
+# because we don't initialize it - values are NA
+head(all_cars_loop)
+
+# how many cars area there
+nrow(all_cars_loop)
+# for loops use an index - in this case "i" but you could use anything - it repeats
+# anything between the {} for each values of i between 1 and nrow(possible_car) (which is 4 in this case)
+
+# pull function from the r scrtipt file
+source("R/power_watts.R")
+
+# index in to a matrix (like all_cars_loop) is by row and column all_cars_loop[2,5] is 2nd row and 5th column
+for (i in 1:nrow(car_rolling)) {
+  all_cars_loop[,i] = power_watts(
+    surface_area = car_rolling$area[i], 
+    mass_kg = car_rolling$mass[i], 
+    velocity = average_speed, 
+    rolling = rolling_coef)
+}
+
+# now it has values added
+head(all_cars_loop)
+# we can add column names
+colnames(all_cars_loop)=car_rolling$name
+
+# for plotting sometimes its useful to turn columns in to rows
+long_loop_cars = all_cars_loop %>% pivot_longer(cols=everything(), names_to="car", values_to="power")
+head(long_loop_cars)
+
+# quick visualization
+loop_plot = ggplot(long_loop_cars, aes(car,power, fill=car))+geom_boxplot() +
+  scale_y_continuous(labels = comma)+
+ # Add theme and titles and lables:
+  theme_bw()+
+  labs(title = "For Loop",
+       subtitle = "Power as a Function of Rolling Coefficient",
+       x = "Vehicle (Mass/Surface Area)", y = "Power in Watts")+
+  scale_fill_discrete(name = "Vehicle Mass & Surface Area",
+                       labels = c("A: 20,000 | 22",
+                                  "B: 65,000 | 30",
+                                  "C: 38,000 | 22",
+                                  "D: 30,000 | 10"))+
+  # Change theme variables:
+  theme(text = element_text(family = "serif"),
+        plot.title = element_text(size=14, face="bold"),
+        plot.subtitle = element_text(size = 9, face = "bold.italic"),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size=10, face="bold", vjust = -1),
+        axis.title.y = element_text(size=10, face="bold", vjust = 2),
+        strip.text.x = element_text(size = 10, face = "bold.italic"),
+        legend.title = element_text(size = 10, face = "bold.italic"),
+        legend.position = "right")
+
+# call plot
+loop_plot
+
+```
+
+### **Second Using pmap**
+
+*pmap* is available in the *purr* library
+
+*mapply* is another R option
+
+```{r}
+
+
+# the first part, generating the data frame, the conversion, and rolling coefficients is the same.
+# we want our samples to be the same so we will not re-run the sample for getting 100 rolling coefficients
+# pmap runs a function for each value in a list of parameters, with other parameters set for each iteration
+
+all_cars_pmap = pmap(list(surface_area = car_rolling$area, mass_kg = car_rolling$mass), 
+                 power_watts, velocity = average_speed, rolling = rolling_coef)
+
+# lets turn to a data frame for easier graphing
+# we can add column names
+all_cars_pmap = as.data.frame(all_cars_pmap, col.names=car_rolling$name)
+
+head(all_cars_pmap)
+
+# for plotting sometimes its useful to turn columns in to rows
+long_pmap_cars = all_cars_pmap %>% pivot_longer(cols=everything(), names_to="car", values_to="power")
+head(long_pmap_cars)
+
+# quick visualization
+pmap_plot = ggplot(long_pmap_cars, aes(car,power, fill=car))+geom_boxplot()+
+   scale_y_continuous(labels = comma)+
+  # Add theme and titles and lables:
+  theme_bw()+
+  labs(title = "PMAP",
+       subtitle = "Power as a Function of Rolling Coefficient",
+       x = "Vehicle (Mass/Surface Area)", y = "Power in Watts")+
+  scale_fill_discrete(name = "Vehicle Mass & Surface Area",
+                       labels = c("A: 20,000 | 22",
+                                  "B: 65,000 | 30",
+                                  "C: 38,000 | 22",
+                                  "D: 30,000 | 10"))+
+  # Change theme variables:
+  theme(text = element_text(family = "serif"),
+        plot.title = element_text(size=14, face="bold"),
+        plot.subtitle = element_text(size = 9, face = "bold.italic"),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size=10, face="bold", vjust = -1),
+        axis.title.y = element_text(size=10, face="bold", vjust = 2),
+        strip.text.x = element_text(size = 10, face = "bold.italic"),
+        legend.title = element_text(size = 10, face = "bold.italic"),
+        legend.position = "right")
+
+# call the plot
+pmap_plot
+
+# put plots side by side
+# to confirm that they look similar
+ggarrange(loop_plot, pmap_plot, common.legend = TRUE)
+
+# compare values
+head(all_cars_loop)
+head(all_cars_pmap)
+
+```
+
+
+
+
+
+
+
