@@ -11,11 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### **Describe why you are taking this course:**
 
-Type here
+I am taking this course to further my experience and knowledge of working with computing for environmental applications. I would like to better understand how to build models using functions and combinations of functions in R. I believe that these skills will serve me well if further employment and allow me to find ways to further analysis my data and build reproducible models for environmental statistical analysis.
 
 ### **Describe your data science background:**
 
-Type here
+Prior to BREN my had very limited data science experience. Some limited experience with SPSS and mostly using excel for data management and analysis. I have had some minimal experience working with spatial data using esri's ARCpro and ARCmaps software. While at Bren I have taken both data analysis courses working in R studio, I have taken both GIS course working in ARCmaps, pyton and QGIS software, and I have also taken Frew's data managment course working with bash and SQLight databases. 
 
 
 
