@@ -1,0 +1,24 @@
+---
+title: "Creating and Running Functions"
+subtitle: "*while* loop function and *case_when* function"
+author: "Ruben Sanchez Ramirez"
+date: "February 26, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+```
+
+```{r}
+
+# setup: load packages
+
+library(tidyverse)
+library(purrr)
+library(ggpubr)
+library(scales)
+
+```

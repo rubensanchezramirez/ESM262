@@ -1,0 +1,47 @@
+---
+title: 'Using functions with Data'
+author: "Naomi Tague"
+date: "January, 2020"
+output:
+  slidy_presentation:
+   highlight: pygments
+  html_document: default
+  pdf_document: default
+  ioslides_presentation:
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo =TRUE)
+knitr::opts_chunk$set(error=TRUE)
+
+library(tidyverse)
+library(purrr)
+
+```
+
+
+# What we've learned so far
+
+* how to make a function
+* how to generate data for a function
+  * by sampling from know distributions (e.g normal)
+  * sampling from a sequence with assigned probablities
+* how to repeat our function for multiple parameter values
+* how to create data structures to store the output of multiple uses of the function
+
+# Go through "Reapting_steps_with_Data2"
+
+# Next assignment - this one on your own!
+
+Create a function that contains a *while* loop
+Create another function that uses *case_when*
+Provide an example use of your function in an Rmarkdown document
+Submit on link to github on Gauchospace as usual
+
+*Remember to use good programming practices; documentation, error-checking,
+understandable variable names
+Due BEFORE Monday's class
+
+AND go through 
+**DataTypes.Rmd**

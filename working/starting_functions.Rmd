@@ -1,0 +1,139 @@
+---
+title: "Starting Functions: Class 3"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Some conventions (helpful later in the course)
+
+* Always write your function in a text editor and then copy into R
+
+* By convention we name files with functions in them by the name of the function.R
+I called my function power_gen_orig so I'll save it to
+
+e.g. **power_gen_orig.R**
+
+* you can have R read a text file by source(“power_gen_orig.R”) - make sure you are in the right working directory
+
+* keep organized by keeping all functions in a subdirectory called *R*
+
+*  Eventually we will want our function to be part of a package (a library of many functions) - to create a package you must use this convention (name.R) place all function in a directory called “R”
+
+
+# Function Example
+
+```{r  examples, echo=TRUE, include=TRUE}
+
+# first set your working directory to just above the R directory
+source("R/power_gen_orig.R")
+
+# to see the code
+power_gen_orig
+
+```
+
+# Some insights into inputs
+
+A cool thing is that you can use multiple values as inputs to your R function
+Lets explore what it can do
+
+```{r usingfunctions, echo=TRUE, include=TRUE}
+# note that this works (calculates power for each height)
+power_gen_orig(height=c(1,4,5), flow=2)
+
+# and this works (calculates power for each flow rate)
+power_gen_orig(height=4, flow=c(2,4,5))
+
+# and this calculates power for each combination of flow and height
+power_gen_orig(height=c(4,5,6), flow=c(2,4,6))
+
+# but this doesn't work - why?
+power_gen_orig(height=c(4,5,6, 8, 20), flow=c(2,4,6))
+
+```
+
+#
+Note that by *sourcing* a function - it will essentially overwrite anything else in your workspace with the same name 
+
+*Warning* - if you name your function, the same as an internal R function, your new function will take precidence, and **hide** the internal R function
+
+Ideally choose function names that are likely to be unique 
+
+If you overwrite a *base* package R function - good to delete it (see below)
+
+You can also use *package_name*:: to get to a function that is hidden in the current workspace
+
+#
+```{r hidden, echo=TRUE, include=TRUE, error=TRUE}
+
+
+# hiding the sort function
+
+# normal use
+mydata = c(1,5,8,22,2)
+sort(mydata)
+
+# define a new function that adds two numbers - silly - but lets call it sort
+sort = function(a,b) {
+  add = a+b
+  return(add)
+}
+
+# now run
+sort(mydata)
+
+# how do we get the base package sort back
+base::sort(mydata)
+
+# or get rid of our silly function in the workspace
+rm(sort)
+sort(mydata)
+```
+
+
+# Lets practice:: Automobile Power Generation
+
+
+
+Some background
+
+One of the equations used to compute automobile fuel efficiency is as follows this is the power required to keep a car moving at a given speed is as follows:
+
+
+$Pb = crolling * m *g *V + \frac{1}{2} * A*p_{air}*c_{drag}*V^3$
+
+
+where crolling and cdrag are rolling and aerodynamic resistive coefficients, typical values are 0.015 and 0.3, respectively.
+
+- V: is vehicle speed (assuming no headwind) in m/s (or mps) m: is vehicle mass in kg
+
+- A is surface area of car $(m^2)$
+
+- *g*: is acceleration due to gravity $(9.8 m/s^2 )$ 
+
+- p_air = density of air $(1.2kg/m^3 )$
+
+- Pb is power in Watts
+
+What would be the function's contract - input/parameters? what will it do?
+
+Write a function to compute power, given a truck of m=31752 kg (parameters for a heavy truck) for a range of different highway speeds (30 m/s, 80 km/hr, 120 km/hr, 40 km/hr )
+Plot power as a function of speed
+Add a second line for lighter vehicle
+Remember to keep the function in its own file and then create a Rmarkdown to use the function
+
+Good Programming Practices:
+
+Name variables so its easy to understand
+Include comments in the function and at the top to make it easy to understand
+Also include the comments in the Rmarkdown that you are using to run the function
+
+
+
+---

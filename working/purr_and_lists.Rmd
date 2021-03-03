@@ -1,0 +1,47 @@
+---
+title: "purr_and_lists"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(purrr)
+library(tidyverse)
+```
+
+When you have lists with multiple elements it can be challenging to extract things
+
+*purrr* library has some useful options
+```{r}
+# make a list
+sale = list(id=1, quality="high", contents=c("apple","cherry"), cost=c(4,5))
+sale
+
+sale2 = list(id=2, quality="low", contents=c("apple"), cost=c(4,5))
+
+sale3 = list(id=3, quality="high", contents=c("cherry","apple","mango"), cost=c(4,5,9))
+  
+# combine lists into a market           
+market = list(sale,sale2,sale3)
+
+market[[1]]
+market[[1]]$contents
+
+# now do we get all the contents
+# this is where purr family "map" comes in - it finds 
+
+map(market, "contents")
+
+# we could same this and unlist it to analyze the data
+# unlist is another helpful functions
+contents = map(market, "contents")
+
+contents
+
+contents = unlist(contents)
+contents
+
+summary(as.factor(contents))
+
+
+```
