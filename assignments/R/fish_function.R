@@ -19,7 +19,7 @@
 ################################################################################
 
 # name the function and set the inputs
-fish_function <- function(fish_vector, print_plot)
+fish_function <- function(fish_vector, print_plot = FALSE)
 {
   
   # on the chance that a data frame is entered, convert it into a vector
@@ -59,24 +59,22 @@ fish_function <- function(fish_vector, print_plot)
           axis.title.y = element_text(size=10, face="bold", vjust = 2),
           strip.text.x = element_text(size = 10, face = "bold.italic"),
           legend.title = element_blank(),
-          legend.position = "right")
+          legend.position = "none")
   
   # Make a list of the values that will be returned as outputs to this function
   fish_list = list(Max = sprintf("The most commonly caught fish (%s). Count = (%d)", max_fish, max_count),
                    Min = sprintf("The least commonly caught fish (%s). Count = (%d)", min_fish, min_count),
-                   Total = sprintf("The total number of fish caught (%0.0f)", total_fish),
-                   # create an option where the default is to not print the plot
-                   if(missing(print_plot) || print_plot == FALSE) {
-                     # Null
-                   } else {
-                     Plot = fish_plot
-                   }
-                   )
+                   Total = sprintf("The total number of fish caught (%0.0f)", total_fish))
+  
+  # create an option where the default is to not print the plot
+  if(print_plot == TRUE) {
+    fish_list$Plot = fish_plot
+  } else {
+    fish_list$Plot = NULL
+  }
   
   # Make the function return the list
   return(fish_list)
-  # Add print for situations where plot is present
-  print(fish_list)
   
 }
 

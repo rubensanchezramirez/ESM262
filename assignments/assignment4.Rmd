@@ -48,7 +48,7 @@ fish <- read.delim("data/fish.txt")
 # Run the function for the data set
 # default option is to not have the plot printed
 # If "TRUE" or an other value rather then "FALSE" is entered, the plot will be printed
-fish_function(fish, TRUE)
+fish_function(fish,TRUE)
 
 ```
 
