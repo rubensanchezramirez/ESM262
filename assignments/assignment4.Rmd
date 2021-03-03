@@ -1,0 +1,62 @@
+---
+title: "Returning Multiple Things From a Function"
+subtitle: "Most Common, Rarest, and Total Fish Caught"
+author: "Ruben Sanchez Ramirez"
+date: "February 22, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggplot2)
+```
+
+### **Background:**
+
+Write a function that takes a vector of fish names and always returns three items:
+
+  + The most common fish
+  + The rarest fish
+  + The total number of fish
+  
+  **AND**
+  
+Include an option **(defaulted to FALSE)** that if TRUE also returns a historgram of the number of each fish type, with a title giving the total number of fish caught.
+
+### **Function:**
+
+The function used is referenced from the **fish_function.R** file.
+
+The data used comes from the **fish.txt** file 
+
+The default option is for the plot to not print.
+
+  + This means that if no value is added other than the fish list, then the plot will not be printed
+  + If the second value is set to FALSE then the plot will not print
+  + If the second value is set to TRUE or an other value other than FALSE then the plot will be printed
+
+```{r}
+
+# Call the function from the fish_fuction R script.
+source("R/fish_function.R")
+
+# Read in the data from the .txt file
+fish <- read.delim("data/fish.txt")
+
+# Run the function for the data set
+# default option is to not have the plot printed
+# If "TRUE" or an other value rather then "FALSE" is entered, the plot will be printed
+fish_function(fish, TRUE)
+
+```
+
+
+
+
+
+
+
+
+
