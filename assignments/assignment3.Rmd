@@ -20,5 +20,81 @@ library(tidyverse)
 library(purrr)
 library(ggpubr)
 library(scales)
+library(formattable)
 
 ```
+
+```{r}
+
+## create a data set with fake id numbers and scores 
+survey_scores = data.frame(
+  # id number similar to those produced by survey results
+  id = c("a3341","a3341","a3341","a3341","a3341","a3341","a3341","a3341",
+         "b4452","b4452","b4452","b4452","b4452","b4452","b4452","b4452",
+         "c5563","c5563","c5563","c5563","c5563","c5563","c5563","c5563",
+         "d6674","d6674","d6674","d6674","d6674","d6674","d6674","d6674"),
+  # category for the indicator that each question relates to
+  category = c("economical","ecological","social","instatution","economical","social","instatution","social",
+               "economical","ecological","social","instatution","economical","social","instatution","social",
+               "economical","ecological","social","instatution","economical","social","instatution","social",
+               "economical","ecological","social","instatution","economical","social","instatution","social"),
+  # score for each question
+  score = c(2,5,1,3,3,0,0,2,
+            6,3,2,4,1,1,1,3,
+            3,2,1,2,2,1,0,1,
+            4,4,1,3,3,1,1,3),
+  # max score associated with each question
+  max = c(7,6,4,6,5,2,1,4,
+          7,6,4,6,5,2,1,4,
+          7,6,4,6,5,2,1,4,
+          7,6,4,6,5,2,1,4))
+
+```
+
+
+```{r}
+
+# call the function
+source("R/indicator_scores_function.R")
+
+# run the function using the data created
+indicator_scores_function(survey_scores)
+
+```
+
+```{r eval=FALSE}
+
+# NOT WORKING!!!
+# this function would not stop trying to evaluate
+stock_equal = function(n_0,r,K,E,q,p,c,n){
+  
+  i = n_0
+  j = E
+  t = 1
+  n_eq = c/(p*q)
+  E_eq = (r/q)*(1-(c/(p*q*K)))
+  
+  while ((i != n_eq) && (j != E_eq)) {
+    i = (((1 + r)*(1-(i/K)))-(q*j))*i
+    j = ((1 + n)*(p*q*i-c))*j
+    t = t + 1
+  }
+  
+  return(t)
+}
+
+```
+
+```{r}
+
+# call the function
+source("R/stock_at_50_harvest.R")
+
+# run the function with the set inputs for
+# initial stock size, growth rate, carrying capacity, effort, catchability
+stock_at_50_harvest(2.6,0.9,4,0.63,0.5)
+
+```
+
+
+
